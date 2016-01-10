@@ -1,0 +1,108 @@
+var express = require('express');
+var app = express();
+var http = require('http');
+
+var config = require('./config/config.json');
+
+var PORT = config.port;
+
+var BUS_KEY = process.env.DABUS_APP_KEY;
+
+var xml2js = require('xml2js');
+var parser = new xml2js.Parser();
+
+// ARRIVALS
+var ARRIVAL_URL = 'http://api.thebus.org/arrivals/?key=';
+var STOP_PARAM = '&stop=';
+
+var ARRIVAL_URI = ARRIVAL_URL + BUS_KEY + STOP_PARAM;
+
+app.get('/arrivals/stop/:id', function (req, res){
+  stopId = req.params.id;
+  var data = '';
+  http.get(ARRIVAL_URI + stopId, function (resp){
+    resp.on('data', function (chunk){
+      data += chunk;
+    });
+    resp.on('end', function (){
+      parser.parseString(data, function (err, result){
+        res.send(JSON.stringify(result));
+      });
+      console.log('au pau');
+    });
+  }).on('error', function (err){
+    console.log(e.message);
+  });
+});
+
+// VEHICLES
+var VEHICLE_URL = 'http://api.thebus.org/vehicle/?key=';
+var VEHICLE_PARAM = '&num=';
+
+var VEHICLE_URI = VEHICLE_URL + BUS_KEY + VEHICLE_PARAM;
+
+app.get('/vehicle/:id', function (req, res){
+  vehicleId = req.params.id;
+  var data = '';
+  http.get(VEHICLE_URI + vehicleId, function (resp){
+    resp.on('data', function (chunk){
+      data += chunk;
+    });
+    resp.on('end', function (){
+      parser.parseString(data, function (err, result){
+        res.send(JSON.stringify(result));
+      });
+    });
+  }).on('error', function (err){
+    console.log(e.message);
+  });
+});
+
+// ROUTES
+var ROUTE_URL = 'http://api.thebus.org/route/?key=';
+var BUS_NUM_PARAM = '&route=';
+var BUS_NAME_PARAM = '&headsign=';
+
+var NUM_URI = ROUTE_URL + BUS_KEY + BUS_NUM_PARAM;
+var NAME_URI = ROUTE_URL + BUS_KEY + BUS_NAME_PARAM;
+
+app.get('/route/num/:id', function (req, res){
+  routeId = req.params.id;
+  var data = '';
+  http.get(NUM_URI + routeId, function (resp){
+    resp.on('data', function (chunk){
+      data += chunk;
+    });
+    resp.on('end', function (){
+      parser.parseString(data, function (err, result){
+        res.send(JSON.stringify(result));
+      });
+    });
+  }).on('error', function (err){
+    console.log(e.message);
+  });
+});
+
+app.get('/route/name/:id', function (req, res){
+  stopId = req.params.id;
+  var data = '';
+  http.get(NAME_URI + stopId, function (resp){
+    resp.on('data', function (chunk){
+      data += chunk;
+    });
+    resp.on('end', function (){
+      parser.parseString(data, function (err, result){
+        res.send(JSON.stringify(result));
+      });
+    });
+  }).on('error', function (err){
+    console.log(e.message);
+  });
+});
+
+var server = app.listen(process.env.PORT || PORT, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Da Bus server stay listening at http://%s:%s', host, port);
+});
