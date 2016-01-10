@@ -17,8 +17,13 @@ var STOP_PARAM = '&stop=';
 
 var ARRIVAL_URI = ARRIVAL_URL + BUS_KEY + STOP_PARAM;
 
-app.get('/arrivals/stop/:id', function (req, res){
-  stopId = req.params.id;
+// app.get('/arrivals', function (req, res){
+//   var test = req.param('stop');
+//   res.send(req.stop);
+// });
+
+app.get('/arrivals', function (req, res){
+  stopId = req.param('stop');
   var data = '';
   http.get(ARRIVAL_URI + stopId, function (resp){
     resp.on('data', function (chunk){
@@ -41,8 +46,8 @@ var VEHICLE_PARAM = '&num=';
 
 var VEHICLE_URI = VEHICLE_URL + BUS_KEY + VEHICLE_PARAM;
 
-app.get('/vehicle/:id', function (req, res){
-  vehicleId = req.params.id;
+app.get('/vehicle', function (req, res){
+  vehicleId = req.param('id');
   var data = '';
   http.get(VEHICLE_URI + vehicleId, function (resp){
     resp.on('data', function (chunk){
@@ -66,8 +71,8 @@ var BUS_NAME_PARAM = '&headsign=';
 var NUM_URI = ROUTE_URL + BUS_KEY + BUS_NUM_PARAM;
 var NAME_URI = ROUTE_URL + BUS_KEY + BUS_NAME_PARAM;
 
-app.get('/route/num/:id', function (req, res){
-  routeId = req.params.id;
+app.get('/route', function (req, res){
+  routeId = req.param('num');
   var data = '';
   http.get(NUM_URI + routeId, function (resp){
     resp.on('data', function (chunk){
@@ -83,8 +88,8 @@ app.get('/route/num/:id', function (req, res){
   });
 });
 
-app.get('/route/name/:id', function (req, res){
-  stopId = req.params.id;
+app.get('/route', function (req, res){
+  stopId = req.param('name');
   var data = '';
   http.get(NAME_URI + stopId, function (resp){
     resp.on('data', function (chunk){
