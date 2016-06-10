@@ -44,11 +44,6 @@ var STOP_PARAM = '&stop=';
 
 var ARRIVAL_URI = ARRIVAL_URL + BUS_KEY + STOP_PARAM;
 
-// app.get('/arrivals', function (req, res){
-//   var test = req.param('stop');
-//   res.send(req.stop);
-// });
-
 app.get('/arrivals', function (req, res){
   stopId = req.param('stop');
   var data = '';
@@ -58,7 +53,7 @@ app.get('/arrivals', function (req, res){
     });
     resp.on('end', function (){
       parser.parseString(data, function (err, result){
-        res.send(parseObj(JSON.stringify(result)));
+        res.send(parseObj(result));
       });
       console.log('au pau');
     });
@@ -82,7 +77,7 @@ app.get('/vehicle', function (req, res){
     });
     resp.on('end', function (){
       parser.parseString(data, function (err, result){
-        res.send(parseObj(JSON.stringify(result)));
+        res.send(parseObj(result));
       });
     });
   }).on('error', function (err){
@@ -99,37 +94,36 @@ var NUM_URI = ROUTE_URL + BUS_KEY + BUS_NUM_PARAM;
 var NAME_URI = ROUTE_URL + BUS_KEY + BUS_NAME_PARAM;
 
 app.get('/route', function (req, res){
-  routeId = req.param('num');
+  routeId = req.query.num;
+  routeName = req.query.name;
   var data = '';
-  http.get(NUM_URI + routeId, function (resp){
-    resp.on('data', function (chunk){
-      data += chunk;
-    });
-    resp.on('end', function (){
-      parser.parseString(data, function (err, result){
-        res.send(parseObj(JSON.stringify(result)));
+  if (routeId){
+    http.get(NUM_URI + routeId, function (resp){
+      resp.on('data', function (chunk){
+        data += chunk;
       });
-    });
-  }).on('error', function (err){
-    console.log(e.message);
-  });
-});
-
-app.get('/route', function (req, res){
-  stopId = req.param('name');
-  var data = '';
-  http.get(NAME_URI + stopId, function (resp){
-    resp.on('data', function (chunk){
-      data += chunk;
-    });
-    resp.on('end', function (){
-      parser.parseString(data, function (err, result){
-        res.send(parseObj(JSON.stringify(result)));
+      resp.on('end', function (){
+        parser.parseString(data, function (err, result){
+          res.send(parseObj(result));
+        });
       });
+    }).on('error', function (err){
+      console.log(e.message);
     });
-  }).on('error', function (err){
-    console.log(e.message);
-  });
+  }else if (routeName){
+    http.get(NAME_URI + routeName, function (resp){
+      resp.on('data', function (chunk){
+        data += chunk;
+      });
+      resp.on('end', function (){
+        parser.parseString(data, function (err, result){
+          res.send(parseObj(result));
+        });
+      });
+    }).on('error', function (err){
+      console.log(e.message);
+    });
+  }
 });
 
 var server = app.listen(process.env.PORT || PORT, function () {
