@@ -11,6 +11,33 @@ var BUS_KEY = process.env.DABUS_APP_KEY;
 var xml2js = require('xml2js');
 var parser = new xml2js.Parser();
 
+// Converts Array values ot it's first string value
+function parseObj(data){
+  for(var i in data){
+    for (var j in data[i]){
+      if (data[i][j].length > 1){
+        var arr = [];
+        data[i][j].forEach(function(el){
+          var obj = {}
+          for(var key in el){
+            obj[key] = el[key][0]
+          }
+          arr.push(obj)
+        })
+        data[i][j] = arr
+      }else if (typeof data[i][j][0] === 'object'){
+        for(var k in data[i][j][0]){
+          data[i][j][0][k] = data[i][j][0][k][0];
+        }
+      }
+      else{
+        data[i][j] = data[i][j][0];
+      }
+    }
+  }
+  return (data);
+}
+
 // ARRIVALS
 var ARRIVAL_URL = 'http://api.thebus.org/arrivals/?key=';
 var STOP_PARAM = '&stop=';
@@ -31,7 +58,7 @@ app.get('/arrivals', function (req, res){
     });
     resp.on('end', function (){
       parser.parseString(data, function (err, result){
-        res.send(JSON.stringify(result));
+        res.send(parseObj(JSON.stringify(result)));
       });
       console.log('au pau');
     });
@@ -55,7 +82,7 @@ app.get('/vehicle', function (req, res){
     });
     resp.on('end', function (){
       parser.parseString(data, function (err, result){
-        res.send(JSON.stringify(result));
+        res.send(parseObj(JSON.stringify(result)));
       });
     });
   }).on('error', function (err){
@@ -80,7 +107,7 @@ app.get('/route', function (req, res){
     });
     resp.on('end', function (){
       parser.parseString(data, function (err, result){
-        res.send(JSON.stringify(result));
+        res.send(parseObj(JSON.stringify(result)));
       });
     });
   }).on('error', function (err){
@@ -97,7 +124,7 @@ app.get('/route', function (req, res){
     });
     resp.on('end', function (){
       parser.parseString(data, function (err, result){
-        res.send(JSON.stringify(result));
+        res.send(parseObj(JSON.stringify(result)));
       });
     });
   }).on('error', function (err){
