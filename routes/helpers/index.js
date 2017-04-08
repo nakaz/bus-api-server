@@ -29,7 +29,6 @@ module.exports = {
   express,
   router,
   BUS_KEY,
-  BusAPIQuery,
-  BusDataParser
+  BusAPIQuery
 }
 
