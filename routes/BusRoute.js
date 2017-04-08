@@ -6,12 +6,12 @@ const {
   BusAPIQuery
 } = require('./helpers')
 
-var ROUTE_URL = 'http://api.thebus.org/route/?key=';
-var BUS_NUM_PARAM = '&route=';
-var BUS_NAME_PARAM = '&headsign=';
+const ROUTE_URL = 'http://api.thebus.org/route/?key=';
+const BUS_NUM_PARAM = '&route=';
+const BUS_NAME_PARAM = '&headsign=';
 
-var NUM_URI = ROUTE_URL + BUS_KEY + BUS_NUM_PARAM;
-var NAME_URI = ROUTE_URL + BUS_KEY + BUS_NAME_PARAM;
+const NUM_URI = `${ROUTE_URL}${BUS_KEY}${BUS_NUM_PARAM}`;
+const NAME_URI = `${ROUTE_URL}${BUS_KEY}${BUS_NAME_PARAM}`;
 
 router
   .get('/number/:number', (req, res) => {
